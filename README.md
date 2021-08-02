@@ -1,4 +1,4 @@
 # nodejs-test
-Run app
-npm install
+Run app: <br />
+npm install <br />
 npm start
