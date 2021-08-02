@@ -1,0 +1,152 @@
+extends layout
+
+block content
+
+  div.content_book
+    h2 Danh sách yêu cầu
+    form(action="/" method="POST")
+        div.row
+            div.col
+              div
+                 label Thời gian xem nhà
+                 -if (typeof(param) !== 'undefined'){
+                    input(type="date" name="viewAt_from" value="#{param.viewAt_from}")
+                 -} else{
+                     input(type="date" name="viewAt_from")
+                 -}
+                 -if (typeof(param) !== 'undefined'){
+                      input(type="date" name="viewAt_to" value="#{param.viewAt_to}")
+                 -} else{
+                       input(type="date" name="viewAt_to")
+                 -}
+              div
+                 label Thời gian đặt lịch
+                 -if (typeof(param) !== 'undefined'){
+                     input(type="date" name="createdAt_from" value="#{param.createdAt_from}")
+                 -} else{
+                      input(type="date" name="createdAt_from")
+                 -}
+                 -if (typeof(param) !== 'undefined'){
+                       input(type="date" name="createdAt_to" value="#{param.createdAt_to}")
+                 -} else{
+                        input(type="date" name="createdAt_to")
+                 -}
+            div.col
+                div.row
+                    div.col
+                      div
+                        label(for="user") Tìm kiếm người đặt lịch
+                        -if (typeof(param) !== 'undefined'){
+                           input(type="text" name="user" value="#{param.user}" placeholder="Tìm theo tên, số điện thoại, email")
+                        -} else{
+                            input(type="text" name="user" placeholder="Tìm theo tên, số điện thoại, email")
+                        -}
+
+                      div
+                        label(for="status") Trạng thái
+                        -if (typeof(param) !== 'undefined'){
+                           select(name="status" value="#{param.status}")
+                               option(value="") Tất cả
+                               -for(let key in Enum.requestStatus){
+                                  -if(key == param.status){
+                                     option(value="#{key}" selected) #{Enum.requestStatus[key]}
+                                  -} else {
+                                     option(value="#{key}") #{Enum.requestStatus[key]}
+                                  - }
+
+                               -}
+                        -} else{
+                             select(name="status")
+                               option(value="") Tất cả
+                               -for(let key in Enum.requestStatus){
+                                  option(value="#{key}") #{Enum.requestStatus[key]}
+                               -}
+                        -}
+
+                      div.row
+                        div.col
+                          div
+                            label(for="supportCount") Số lần nhắc lịch
+                            -if (typeof(param) !== 'undefined'){
+                               input(type="text" name="supportCount" value="#{param.supportCount}")
+                            -} else{
+                                input(type="text" name="supportCount")
+                            -}
+                        div.col
+                          div
+                            label(for="is_crawl") Loại tin
+                            -if (typeof(param) !== 'undefined'){
+                               select(name="is_crawl" value="#{param.is_crawl}")
+                                   option(value="") Tất cả
+                                   -for(let key in Enum.newsType){
+                                      -if(key == param.is_crawl){
+                                         option(value="#{key}" selected) #{Enum.newsType[key]}
+                                      -} else {
+                                         option(value="#{key}") #{Enum.newsType[key]}
+                                      - }
+
+                                   -}
+                            -} else{
+                                 select(name="is_crawl")
+                                   option(value="") Tất cả
+                                   -for(let key in Enum.newsType){
+                                      option(value="#{key}") #{Enum.newsType[key]}
+                                   -}
+                            -}
+                    div.col
+                      div
+                        label(for="type") Loại xem
+                        -if (typeof(param) !== 'undefined'){
+                           input(type="text" name="type" value="#{param.type}" placeholder="Chưa có thông tin enum loại xem")
+                        -} else{
+                            input(type="text" name="type" placeholder="Chưa có thông tin enum loại xem")
+                        -}
+                      div
+                        label(for="title") Tin đăng
+                        -if (typeof(param) !== 'undefined'){
+                           input(type="text" name="title" value="#{param.title}")
+                        -} else{
+                            input(type="text" name="title")
+                        -}
+              div
+                 button(type="submit") Tìm kiếm
+  div.table_block
+    table.table
+        tr
+            th Mã đặt lịch
+            th Thời gian đặt lịch
+            th Thời gian xem nhà
+            th Loại xem
+            th Trạng thái lịch hẹn
+            th Ghi chú
+            th Người đặt lịch
+            th Người đăng tin
+            th Mã đăng tin
+            th Loại tin
+            th Tiêu đề đăng
+            th Số lần nhắc lịch
+        each request in requests
+            tr
+                td #{request.code}
+                td #{moment(request.createdAt).format("DD-MM-YYYY HH:mm")}
+                td #{moment(request.viewAt).format("DD-MM-YYYY HH:mm")}
+                td #{request.type}
+                td #{Enum.requestStatus[request.status]}
+                td #{request.note}
+                td
+                    span #{request.senderName}
+                    br
+                    span #{request.senderPhone}
+                    br
+                    span #{request.senderEmail}
+                td
+                    span #{request.users.name}
+                    br
+                    span #{request.users.email}
+                    br
+                    span #{request.users.phone}
+                td #{request.news.code}
+                td #{Enum.newsType[request.news.is_crawl]}
+                td #{request.news.title}
+                td #{request.supportCount}
+
